@@ -1,0 +1,1 @@
+postgres -D "c:\Program Files\PostgreSQL\data\pg10"

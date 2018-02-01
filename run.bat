@@ -1,0 +1,1 @@
+set PGHOST=localhost&& set PGUSER=postgres&& set PGDATABASE=postgres&& set PGPASSWORD=admin&& set PGPORT=5432&& npm start
