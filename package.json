@@ -1,17 +1,19 @@
 {
   "name": "todo-server",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dbmigrate": "node migrations/index.js up"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "koa": "^2.4.1",
     "koa-websocket": "^4.1.0",
-    "pg": "^7.4.1"
+    "pg": "^7.4.1",
+    "umzug": "^2.1.0"
   }
 }
