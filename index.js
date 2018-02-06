@@ -21,4 +21,4 @@ app.ws.use(function(ctx, next) {
     });
 });
 
-app.listen(3001);
+app.listen(process.env.PORT || 3001);
