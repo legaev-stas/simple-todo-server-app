@@ -1,15 +1,46 @@
 const path = require('path');
+const Sequelize = require('sequelize');
 const Umzug = require('umzug');
 
-const umzug = new Umzug({
-    storage: 'json',
+const DB_TYPE = 'postgres';
+const PGHOST = process.env.PGHOST;
+const PGPORT = process.env.PGPORT;
 
-    logging: logUmzugEvent,
+const PGDATABASE = process.env.PGDATABASE;
+const PGUSER = process.env.PGUSER;
+const PGPASSWORD = process.env.PGPASSWORD;
+
+const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
+    host: PGHOST,
+    port: PGPORT,
+    dialect: DB_TYPE,
+
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+    },
+});
+
+const umzug = new Umzug({
+    storage: 'sequelize',
+    storageOptions: {
+        sequelize: sequelize,
+    },
+
+    logging: function() {
+        console.log.apply(null, arguments);
+    },
 
     migrations: {
+        params: [
+            sequelize.getQueryInterface(), // queryInterface
+            sequelize.constructor, // DataTypes
+            function() {
+                throw new Error('Migration tried to use old style "done" callback. Please upgrade to "umzug" and return a promise instead.');
+            }
+        ],
         path: 'migrations/scripts',
-
-        // The pattern that determines whether or not a file is a migration.
         pattern: /\.js$/,
     }
 });
