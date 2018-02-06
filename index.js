@@ -2,11 +2,11 @@ const Koa = require('koa');
 const websockify = require('koa-websocket');
 const messageHandler = require('./message-handler');
 const session = require('./session');
-const client = require('./db');
+const sequelize = require('./db');
 
 
 const app = websockify(new Koa());
-app.context.db = client;
+app.context.sequelize = sequelize;
 
 app.ws.use(function(ctx, next) {
     session.add(ctx);
@@ -14,7 +14,6 @@ app.ws.use(function(ctx, next) {
     ctx.websocket.on('close', () => {
         session.remove(ctx);
     });
-
 
     ctx.websocket.on('message', (action) => {
         messageHandler(action, ctx);
