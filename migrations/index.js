@@ -1,26 +1,6 @@
 const path = require('path');
-const Sequelize = require('sequelize');
 const Umzug = require('umzug');
-
-const DB_TYPE = 'postgres';
-const PGHOST = process.env.PGHOST;
-const PGPORT = process.env.PGPORT;
-
-const PGDATABASE = process.env.PGDATABASE;
-const PGUSER = process.env.PGUSER;
-const PGPASSWORD = process.env.PGPASSWORD;
-
-const sequelize = new Sequelize(PGDATABASE, PGUSER, PGPASSWORD, {
-    host: PGHOST,
-    port: PGPORT,
-    dialect: DB_TYPE,
-
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    },
-});
+const sequelize = require('../db');
 
 const umzug = new Umzug({
     storage: 'sequelize',

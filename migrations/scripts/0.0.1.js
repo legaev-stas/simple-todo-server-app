@@ -1,7 +1,8 @@
 const client = require('../../db');
 
 module.exports = {
-    up: function () {
+    up: function (query) {
+        console.log(query)
         return Promise.all([
             client.query('CREATE TABLE category (id uuid, title text)'),
             client.query('CREATE TABLE task (id uuid, category uuid, title text, description text, completed boolean)')
