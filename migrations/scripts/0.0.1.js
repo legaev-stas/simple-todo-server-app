@@ -1,18 +1,34 @@
-const client = require('../../db');
-
 module.exports = {
-    up: function (query) {
-        console.log(query)
+    up: function (queryInterface, Sequelize) {
         return Promise.all([
-            client.query('CREATE TABLE category (id uuid, title text)'),
-            client.query('CREATE TABLE task (id uuid, category uuid, title text, description text, completed boolean)')
+            queryInterface.createTable('categories', {
+                id: {
+                    type: Sequelize.UUID,
+                    primaryKey: true
+                },
+                title: Sequelize.STRING,
+                createdAt: Sequelize.DATE,
+                updatedAt: Sequelize.DATE,
+            }),
+            queryInterface.createTable('tasks', {
+                id: {
+                    type: Sequelize.UUID,
+                    primaryKey: true
+                },
+                category: Sequelize.UUID,
+                title: Sequelize.STRING,
+                description: Sequelize.STRING,
+                completed: Sequelize.BOOLEAN,
+                createdAt: Sequelize.DATE,
+                updatedAt: Sequelize.DATE
+            })
         ]);
     },
 
-    down: function () {
+    down: function (queryInterface) {
         return Promise.all([
-            client.query('DROP TABLE category'),
-            client.query('DROP TABLE task')
+            queryInterface.dropTable('categories'),
+            queryInterface.dropTable('tasks')
         ]);
     }
 };

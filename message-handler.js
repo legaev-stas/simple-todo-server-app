@@ -1,4 +1,6 @@
 const session = require('./session');
+const CategoryModel = require('./models/category');
+const TaskModel = require('./models/task');
 
 const CATEGORY_CREATE = 'CATEGORY_CREATE';
 const CATEGORY_UPDATE = 'CATEGORY_UPDATE';
@@ -20,64 +22,71 @@ const sendToOtherSessions = (action, currentCtx) => {
     });
 };
 
+
 module.exports = (action, ctx) => {
     const {type, payload = {}} = JSON.parse(action);
-    console.log(type, payload);
+    console.log('[WebSocket Message]',type, payload);
     switch (type) {
         case SYNC_CLIENT:
-            ctx.sequelize.query('SELECT * FROM category').then(result => {
-                console.log(result[0], result[1])
+            CategoryModel.findAll({
+                attributes: ['id','title']
+            }).then(result => {
                 ctx.websocket.send(JSON.stringify({
                     type: CATEGORY_SYNC,
-                    payload: result[0]
+                    payload: result
                 }));
             }, err => {
                 console.log(err.stack);
+                //TODO send event back to save in sync queue
             });
 
-            ctx.sequelize.query('SELECT * FROM task').then(result => {
+            TaskModel.findAll({
+                attributes: ['id','category','title','description','completed']
+            }).then(result => {
                 ctx.websocket.send(JSON.stringify({
                     type: TASK_SYNC,
-                    payload: result[0]
+                    payload: result
                 }));
             }, err => {
                 console.log(err.stack);
+                //TODO send event back to save in sync queue
             });
+
             break;
 
 
         case CATEGORY_CREATE:
-            ctx.sequelize.query(`INSERT INTO category(id, title) VALUES('${payload.id}', '${payload.title}')`);
+            CategoryModel.create(payload);
             sendToOtherSessions(action, ctx);
             break;
 
 
         case CATEGORY_UPDATE:
-            ctx.sequelize.query(`UPDATE category SET title='${payload.title}' WHERE id='${payload.id}'`);
+            CategoryModel.update(payload, {where: {id: payload.id}});
             sendToOtherSessions(action, ctx);
             break;
 
 
         case CATEGORY_DELETE:
-            ctx.sequelize.query(`DELETE FROM category WHERE id='${payload.id}'`);
+            CategoryModel.destroy({where: {id: payload.id}});
             sendToOtherSessions(action, ctx);
             break;
 
 
         case TASK_CREATE:
-            ctx.sequelize.query(`INSERT INTO task(id, category, title, description, completed) VALUES('${payload.id}', '${payload.category}', '${payload.title}', '${payload.description}', ${payload.completed})`);
+            TaskModel.create(payload);
             sendToOtherSessions(action, ctx);
             break;
 
 
         case TASK_UPDATE:
-            ctx.sequelize.query(`UPDATE task SET category='${payload.category}', title='${payload.title}', description='${payload.description}', completed=${payload.completed}  WHERE id='${payload.id}'`);
+            TaskModel.update(payload, {where: {id: payload.id}});
             sendToOtherSessions(action, ctx);
             break;
 
 
         case TASK_DELETE:
-            ctx.sequelize.query(`DELETE FROM task WHERE id='${payload.id}'`);
+            TaskModel.destroy({where: {id: payload.id}});
             sendToOtherSessions(action, ctx);
             break;
     }
