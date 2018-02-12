@@ -142,6 +142,11 @@ executedCmd
         console.log("=".repeat(errorStr.length));
         console.log(err);
         console.log("=".repeat(errorStr.length));
+
+        // exit process if module executed directly rather than as required module of another module.
+        if (require.main === module){
+            process.exit(1);
+        }
     })
     .then(() => {
         if (cmd !== 'status') {
