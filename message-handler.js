@@ -1,6 +1,5 @@
 const session = require('./session');
-const CategoryModel = require('./models/category');
-const TaskModel = require('./models/task');
+const db = require('./db/models');
 
 const CATEGORY_CREATE = 'CATEGORY_CREATE';
 const CATEGORY_UPDATE = 'CATEGORY_UPDATE';
@@ -28,7 +27,7 @@ module.exports = (action, ctx) => {
     console.log('[WebSocket Message]',type, payload);
     switch (type) {
         case SYNC_CLIENT:
-            CategoryModel.findAll({
+            db.category.findAll({
                 attributes: ['id','title']
             }).then(result => {
                 ctx.websocket.send(JSON.stringify({
@@ -40,7 +39,7 @@ module.exports = (action, ctx) => {
                 //TODO send event back to save in sync queue
             });
 
-            TaskModel.findAll({
+            db.task.findAll({
                 attributes: ['id','category','title','description','completed']
             }).then(result => {
                 ctx.websocket.send(JSON.stringify({
@@ -56,37 +55,38 @@ module.exports = (action, ctx) => {
 
 
         case CATEGORY_CREATE:
-            CategoryModel.create(payload);
+            db.category.create(payload);
             sendToOtherSessions(action, ctx);
             break;
 
 
         case CATEGORY_UPDATE:
-            CategoryModel.update(payload, {where: {id: payload.id}});
+            db.category.update(payload, {where: {id: payload.id}});
             sendToOtherSessions(action, ctx);
             break;
 
 
         case CATEGORY_DELETE:
-            CategoryModel.destroy({where: {id: payload.id}});
+            db.category.destroy({where: {id: payload.id}});
+            db.task.destroy({where: {category: payload.id}});
             sendToOtherSessions(action, ctx);
             break;
 
 
         case TASK_CREATE:
-            TaskModel.create(payload);
+            db.task.create(payload);
             sendToOtherSessions(action, ctx);
             break;
 
 
         case TASK_UPDATE:
-            TaskModel.update(payload, {where: {id: payload.id}});
+            db.task.update(payload, {where: {id: payload.id}});
             sendToOtherSessions(action, ctx);
             break;
 
 
         case TASK_DELETE:
-            TaskModel.destroy({where: {id: payload.id}});
+            db.task.destroy({where: {id: payload.id}});
             sendToOtherSessions(action, ctx);
             break;
     }

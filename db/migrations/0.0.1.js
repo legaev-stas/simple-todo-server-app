@@ -8,7 +8,7 @@ module.exports = {
                 },
                 title: Sequelize.STRING,
                 createdAt: Sequelize.DATE,
-                updatedAt: Sequelize.DATE,
+                updatedAt: Sequelize.DATE
             }),
             queryInterface.createTable('tasks', {
                 id: {

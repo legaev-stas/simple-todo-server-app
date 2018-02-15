@@ -7,7 +7,11 @@
     "build": "echo [Node.js] Build complete",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "dbmigrate": "node migrations/index.js"
+    "dbmigrate": "sequelize db:migrate",
+    "dbmigrate-to": "sequelize db:migrate --to",
+    "dbmigrate-undo": "sequelize db:migrate:undo",
+    "dbmigrate-undo-to": "sequelize db:migrate:undo:all --to",
+    "dbmigrate-undo-all": "sequelize db:migrate:undo:all"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +20,6 @@
     "koa-websocket": "^4.1.0",
     "pg": "^7.4.1",
     "sequelize": "^4.32.7",
-    "umzug": "^2.1.0"
+    "sequelize-cli": "^4.0.0"
   }
 }
