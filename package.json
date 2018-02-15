@@ -1,7 +1,8 @@
 {
   "name": "todo-server",
-  "version": "0.0.3",
-  "description": "",
+  "version": "0.0.4",
+  "description": "Webserver for Simple ToDo application",
+  "repository": "https://github.com/legaev-stas/simple-todo-server-app",
   "main": "index.js",
   "scripts": {
     "build": "echo [Node.js] Build complete",
