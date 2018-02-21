@@ -3,6 +3,7 @@ const passport = require('koa-passport');
 const FacebookTokenStrategy = require('passport-facebook-token');
 const db = require('../db/models');
 const jwt = require('jsonwebtoken');
+const koaJwt = require('koa-jwt');
 
 const router = new Router({
     prefix: '/auth'
@@ -53,5 +54,42 @@ router.post('/facebook', passport.authenticate('facebook-token', {session: false
 
     next();
 }, generateToken, sendToken);
+
+
+//token handling middleware
+const authenticate = koaJwt({
+    secret: 'my-secret',
+    passthrough: true,
+    getToken: function (req) {
+        if (req.headers['x-auth-token']) {
+            return req.headers['x-auth-token'];
+        }
+        return null;
+    }
+});
+
+const getCurrentUser = (ctx, next) => {
+    db.user.findById(ctx.state.user.id).then(user => {
+        if (!user) {
+            ctx.res.statusCode = 401;
+            ctx.res.statusMessage = 'User Not Authenticated';
+            ctx.res.end();
+            return;
+        }
+
+        ctx.req.user = user.get({plain: true});
+        next();
+    });
+};
+
+const getOne = (ctx) => {
+    ctx.res.status = 200;
+    ctx.res.end(JSON.stringify(ctx.req.user));
+};
+
+router.get('/me', (ctx, next)=>{
+    ctx.respons.end()
+}, authenticate, getCurrentUser, getOne);
+
 
 module.exports = router;

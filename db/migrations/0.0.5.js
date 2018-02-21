@@ -9,7 +9,6 @@ module.exports = {
                 firstName: Sequelize.STRING,
                 lastName: Sequelize.STRING,
                 email: Sequelize.STRING,
-                token: Sequelize.STRING,
                 createdAt: Sequelize.DATE,
                 updatedAt: Sequelize.DATE
             })

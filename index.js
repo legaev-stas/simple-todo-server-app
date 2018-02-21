@@ -3,10 +3,7 @@ const websockify = require('koa-websocket');
 const messageHandler = require('./message-handler');
 const session = require('./session');
 
-// App
 const app = websockify(new Koa());
-
-
 
 // CORS
 const cors = require('koa-cors');
@@ -18,14 +15,12 @@ app.use(cors({
 }));
 
 
-
-
+// routers
 const authRouter = require('./routers/auth');
 app.use(authRouter.routes());
 
 
 // WebSockets
-
 app.ws.use(function (ctx, next) {
     session.add(ctx);
 
