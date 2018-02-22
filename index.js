@@ -5,6 +5,10 @@ const session = require('./session');
 
 const app = websockify(new Koa());
 
+// app.on('error', err => {
+//     console.error('server error', err)
+// });
+
 // CORS
 const cors = require('koa-cors');
 

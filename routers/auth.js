@@ -68,28 +68,18 @@ const authenticate = koaJwt({
     }
 });
 
-const getCurrentUser = (ctx, next) => {
-    db.user.findById(ctx.state.user.id).then(user => {
+const getCurrentUser = async (ctx) => {
+    await db.user.findById(ctx.state.user.id).then(user => {
         if (!user) {
-            ctx.res.statusCode = 401;
-            ctx.res.statusMessage = 'User Not Authenticated';
-            ctx.res.end();
-            return;
+            ctx.status = 401;
+        } else{
+            ctx.status = 200;
+            ctx.body = JSON.stringify(user.get({plain: true}));
         }
-
-        ctx.req.user = user.get({plain: true});
-        next();
     });
 };
 
-const getOne = (ctx) => {
-    ctx.res.status = 200;
-    ctx.res.end(JSON.stringify(ctx.req.user));
-};
-
-router.get('/me', (ctx, next)=>{
-    ctx.respons.end()
-}, authenticate, getCurrentUser, getOne);
+router.get('/me', authenticate, getCurrentUser);
 
 
 module.exports = router;
