@@ -41,15 +41,14 @@ const generateToken = (ctx, next) => {
 };
 
 const sendToken = ctx => {
-    ctx.res.writeHead(200, {
-        'x-auth-token': ctx.req.token
-    });
-    ctx.res.end(JSON.stringify({id: ctx.state.user.id}));
+    ctx.status = 200;
+    ctx.set('x-auth-token', ctx.req.token);
+    ctx.body = JSON.stringify({id: ctx.state.user.id});
 };
 
 router.post('/facebook', passport.authenticate('facebook-token', {session: false}), (ctx, next) => {
     if (!ctx.state.user) {
-        return ctx.res.send(401, 'User Not Authenticated');
+        return ctx.status = 401;
     }
 
     next();
