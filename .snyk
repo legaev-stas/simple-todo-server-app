@@ -4,13 +4,9 @@ version: v1.10.2
 ignore:
   'npm:hoek:20180212':
     - koa-jwt > jsonwebtoken > joi > hoek:
-        reason: No solution for current moment
-        expires: '2018-04-11T13:37:18.275Z'
+        reason: No available solutions
+        expires: '2018-04-11T15:35:08.046Z'
     - koa-jwt > jsonwebtoken > joi > topo > hoek:
-        reason: No fixes available
-        expires: '2018-04-11T13:37:18.276Z'
-  'npm:ws:20171108':
-    - koa-websocket > ws:
-        reason: No fixes are available
-        expires: '2018-04-11T13:37:18.276Z'
+        reason: No available solutions
+        expires: '2018-04-11T15:35:08.046Z'
 patch: {}

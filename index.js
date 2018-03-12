@@ -1,9 +1,10 @@
 const Koa = require('koa');
-const websockify = require('koa-websocket');
+const WebSocket = require('ws');
+const http = require('http');
 const messageHandler = require('./message-handler');
 const session = require('./session');
 
-const app = websockify(new Koa());
+const app = new Koa();
 
 // app.on('error', err => {
 //     console.error('server error', err)
@@ -25,16 +26,34 @@ app.use(authRouter.routes());
 
 
 // WebSockets
-app.ws.use(function (ctx, next) {
-    session.add(ctx);
+// app.ws.use(function (ctx, next) {
+//     session.add(ctx);
+//
+//     ctx.websocket.on('close', () => {
+//         session.remove(ctx);
+//     });
+//
+//     ctx.websocket.on('message', (action) => {
+//         messageHandler(action, ctx);
+//     });
+// });
+//
+// app.listen(process.env.PORT || 3001);
 
-    ctx.websocket.on('close', () => {
-        session.remove(ctx);
-    });
+//////////
+const server = http.createServer(app.callback());
+const wss = new WebSocket.Server({server});
 
-    ctx.websocket.on('message', (action) => {
-        messageHandler(action, ctx);
-    });
+wss.on('connection', function connection(ws, req) {
+  session.add(ws);
+
+  ws.on('close', () => {
+    session.remove(ws);
+  });
+
+  ws.on('message', (action) => {
+    messageHandler(action, ws);
+  });
 });
 
-app.listen(process.env.PORT || 3001);
+server.listen(process.env.PORT || 3001, () => console.log(`Listening on ${server.address().port}`));
