@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "echo [Node.js] Build complete",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "snyk test",
     "start": "node index.js",
     "dbmigrate": "sequelize db:migrate",
     "dbmigrate-to": "sequelize db:migrate --to",
@@ -17,8 +17,8 @@
   "author": "Stanislav Legaev",
   "license": "ISC",
   "dependencies": {
-    "jsonwebtoken": "^8.1.1",
-    "koa": "^2.4.1",
+    "jsonwebtoken": "^8.2.0",
+    "koa": "^2.5.0",
     "koa-cors": "0.0.16",
     "koa-jwt": "^3.3.0",
     "koa-passport": "^4.0.1",
@@ -26,7 +26,10 @@
     "koa-websocket": "^4.1.0",
     "passport-facebook-token": "^3.3.0",
     "pg": "^7.4.1",
-    "sequelize": "^4.32.7",
+    "sequelize": "^4.36.0",
     "sequelize-cli": "^4.0.0"
+  },
+  "devDependencies": {
+    "snyk": "^1.69.11"
   }
 }
