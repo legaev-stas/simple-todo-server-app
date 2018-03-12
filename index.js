@@ -25,22 +25,6 @@ const authRouter = require('./routers/auth');
 app.use(authRouter.routes());
 
 
-// WebSockets
-// app.ws.use(function (ctx, next) {
-//     session.add(ctx);
-//
-//     ctx.websocket.on('close', () => {
-//         session.remove(ctx);
-//     });
-//
-//     ctx.websocket.on('message', (action) => {
-//         messageHandler(action, ctx);
-//     });
-// });
-//
-// app.listen(process.env.PORT || 3001);
-
-//////////
 const server = http.createServer(app.callback());
 const wss = new WebSocket.Server({server});
 
